@@ -1,6 +1,5 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import { useFetch } from '@vueuse/core'
 
 import type { IUser } from '@/interfaces/users/IUser'
 
@@ -17,6 +16,7 @@ export const useUsersStore = defineStore('users', () => {
 
   function logout() {
     isAuth.value = false
+    user.value = {} as IUser
   }
 
   return { isAuth, user, login, logout }

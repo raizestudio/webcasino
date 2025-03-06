@@ -1,13 +1,19 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 
-const messages = ref<string[]>([])
+// Stores
+import { useUsersStore } from '@/stores/users'
+
+const usersStore = useUsersStore()
+
+const messages = ref<[]>([])
 const messageInput = ref('')
 const ws = ref<WebSocket | null>(null)
 const chatContainer = ref<HTMLElement | null>(null)
 
 onMounted(() => {
-  ws.value = new WebSocket('ws://127.0.0.1:8000/ws/chat/lobby/')
+  const token = localStorage.getItem('token')
+  ws.value = new WebSocket(`ws://127.0.0.1:8000/ws/chat/lobby/?token=${token}`)
 
   ws.value.onopen = () => {
     console.log('WebSocket connected!')
@@ -15,7 +21,7 @@ onMounted(() => {
 
   ws.value.onmessage = (event) => {
     const data = JSON.parse(event.data)
-    messages.value.push(data.message)
+    messages.value.push(data)
 
     // Scroll to bottom after new message
     nextTick(() => {
@@ -53,7 +59,10 @@ const sendMessage = () => {
 <template>
   <div class="flex flex-col gap-4 px-2 py-4 shadow-[-4px_0px_6px_-2px_rgba(0,0,0,0.1)] basis-1/4">
     <span>Chat</span>
-    <div ref="chatContainer" class="h-[calc(100vh-200px)] overflow-y-auto flex flex-col justify-end">
+    <div
+      ref="chatContainer"
+      class="h-[calc(100vh-200px)] overflow-y-auto flex flex-col justify-end"
+    >
       <div v-for="(msg, index) in messages" :key="index" class="chat chat-start">
         <div class="chat-image avatar">
           <div class="w-10 rounded-full">
@@ -64,16 +73,23 @@ const sendMessage = () => {
           </div>
         </div>
         <div class="chat-header">
-          Obi-Wan Kenobi
+          {{ msg.user }}
           <time class="text-xs opacity-50">12:45</time>
         </div>
-        <div class="chat-bubble">{{ msg }}</div>
+        <div class="chat-bubble">{{ msg.message }}</div>
         <div class="opacity-50 chat-footer">Delivered</div>
       </div>
     </div>
     <div class="flex gap-2">
-      <input v-model="messageInput" @keyup.enter="sendMessage" type="text" class="w-full input" placeholder="Type your message here" />
-      <button @click="sendMessage" class="btn">Send</button>
+      <input
+        v-model="messageInput"
+        @keyup.enter="sendMessage"
+        type="text"
+        class="w-full input"
+        :placeholder="usersStore.isAuth ? 'Type your message...' : 'You need to login to send message'"
+        :disabled="!usersStore.isAuth"
+      />
+      <button @click="sendMessage" class="btn" :disabled="!usersStore.isAuth">Send</button>
     </div>
   </div>
 </template>

@@ -45,17 +45,18 @@ const router = createRouter({
   ],
 })
 
-router.beforeEach(async (to, from) => {
+router.beforeEach(async (to, from, next) => {
   const { isAuth } = useUsersStore()
   if (
     // make sure the user is authenticated
+    to.meta.requiresAuth && 
     !isAuth &&
-    // ❗️ Avoid an infinite redirect
     to.name !== 'home'
   ) {
     // redirect the user to the login page
-    return { name: 'home' }
+    next({ name: 'home' })
   }
+    next()
 })
 
 export default router

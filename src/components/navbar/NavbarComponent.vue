@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 // Api
 import { fetchCurrencies } from '@/api/financial'
+import { logoutUser } from '@/api/auth'
 
 // Components
 import LoginComponent from '@/components/login/LoginComponent.vue'
@@ -16,7 +18,9 @@ import type { ICurrency } from '@/interfaces/financial/ICurrency'
 // Stores
 import { useUsersStore } from '@/stores/users'
 
+const router = useRouter()
 const userStore = useUsersStore()
+
 
 const currencies = ref<ICurrency[]>([])
 
@@ -25,6 +29,16 @@ fetchCurrencies().then((fetchedCurrencies) => {
   currencies.value = fetchedCurrencies
 })
 
+const appName = import.meta.env.VITE_APP_NAME
+
+const handleLogout = () => {
+  const token = localStorage.getItem('token')
+  logoutUser(token).then(() => {
+    userStore.logout()
+    localStorage.removeItem('token')
+    router.push('/')
+  })
+}
 </script>
 
 <template>
@@ -32,11 +46,12 @@ fetchCurrencies().then((fetchedCurrencies) => {
     <!-- <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" /> -->
     <div class="navbar-start">
       <RouterLink to="/" class=""
-        ><span class="text-3xl font-black font-kneewave">WebCasino</span></RouterLink
+        ><span class="text-3xl font-black font-kneewave">{{ appName }}</span></RouterLink
       >
     </div>
     <div class="navbar-end">
       <!-- {{ currencies }} -->
+      <router-link to="/games" class="btn btn-ghost">Games</router-link>
       <button v-if="!userStore.isAuth" class="btn btn-ghost" onclick="login_modal.showModal()">
         <ProfileIcon />
         <!-- <span>Connecter</span> -->
@@ -76,7 +91,7 @@ fetchCurrencies().then((fetchedCurrencies) => {
               </a>
             </li>
             <li><a>Settings</a></li>
-            <li><a>Logout</a></li>
+            <li @click="handleLogout"><a>Logout</a></li>
           </ul>
         </div>
       </div>
