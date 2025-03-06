@@ -1,5 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import HomeView from '@/views/HomeView.vue'
+import GamesView from '@/views/GamesView.vue'
+import SlotGameView from '@/views/SlotGameView.vue'
+import TableGameView from '@/views/TableGameView.vue'
+import { useUsersStore } from '@/stores/users'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -9,6 +13,27 @@ const router = createRouter({
       name: 'home',
       component: HomeView,
     },
+    {
+      path: '/games',
+      name: 'games',
+      component: GamesView,
+      meta: { requiresAuth: true },
+    },
+    // {
+    //   path: '/games/:id',
+    //   name: 'game',
+    //   component: SlotGameView,
+    // },
+    {
+      path: '/games/slots/:id',
+      name: 'game_slot',
+      component: SlotGameView,
+    },
+    {
+      path: '/games/table/:id',
+      name: 'game_table',
+      component: TableGameView,
+    }
     // {
     //   path: '/about',
     //   name: 'about',
@@ -18,6 +43,19 @@ const router = createRouter({
     //   component: () => import('../views/AboutView.vue'),
     // },
   ],
+})
+
+router.beforeEach(async (to, from) => {
+  const { isAuth } = useUsersStore()
+  if (
+    // make sure the user is authenticated
+    !isAuth &&
+    // ❗️ Avoid an infinite redirect
+    to.name !== 'home'
+  ) {
+    // redirect the user to the login page
+    return { name: 'home' }
+  }
 })
 
 export default router

@@ -1,14 +1,30 @@
 <script setup lang="ts">
+import { ref } from 'vue'
+
+// Api
+import { fetchCurrencies } from '@/api/financial'
+
 // Components
 import LoginComponent from '@/components/login/LoginComponent.vue'
 
 // Icons
 import ProfileIcon from '@/components/icons/ProfileIcon.vue'
 
+// Interfaces
+import type { ICurrency } from '@/interfaces/financial/ICurrency'
+
 // Stores
 import { useUsersStore } from '@/stores/users'
 
 const userStore = useUsersStore()
+
+const currencies = ref<ICurrency[]>([])
+
+fetchCurrencies().then((fetchedCurrencies) => {
+  console.log(currencies)
+  currencies.value = fetchedCurrencies
+})
+
 </script>
 
 <template>
@@ -20,6 +36,7 @@ const userStore = useUsersStore()
       >
     </div>
     <div class="navbar-end">
+      <!-- {{ currencies }} -->
       <button v-if="!userStore.isAuth" class="btn btn-ghost" onclick="login_modal.showModal()">
         <ProfileIcon />
         <!-- <span>Connecter</span> -->
@@ -31,7 +48,7 @@ const userStore = useUsersStore()
             tabindex="0"
             class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
           >
-            qsd
+            <p v-for="currency in currencies" :key="currency.code">{{ currency.name }}</p>
           </div>
         </div>
         <div class="dropdown dropdown-end">

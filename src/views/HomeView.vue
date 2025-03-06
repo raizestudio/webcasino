@@ -1,149 +1,57 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import ChatComponent from '@/components/chat/ChatComponent.vue'
+
+// Api
+import { fetchGames, fetchCategories } from '@/api/games'
+
+// Stores
+import { useGamesStore } from '@/stores/games'
+
+const gamesStore = useGamesStore()
+
+fetchCategories().then((categories) => {
+  console.log(categories)
+  gamesStore.setCategories(categories)
+})
+
+fetchGames().then((games) => {
+  console.log(games)
+  gamesStore.setGames(games)
+})
 </script>
 
 <template>
   <main class="flex grow">
     <div class="flex flex-col px-10 py-4 grow">
       <div class="flex flex-col gap-4">
-        <h1 class="text-4xl font-bold">Featured games</h1>
+        <!-- <div class="bg-red-400">
+          <span>a</span>
+          {{ gamesStore.categories }}
+        </div> -->
+        <h1 class="text-4xl font-bold">Games</h1>
         <div class="relative flex gap-4 overflow-x-hidden max-w-[calc(100vw-600px)]">
           <div class="gap-4 carousel rounded-box">
-            <div class="carousel-item">
+
+            <div v-for="game in gamesStore.games" :key="game.id" class="carousel-item">
               <div class="w-64 shadow-sm card bg-base-100">
                 <figure>
                   <img
-                    src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
-                    alt="Shoes"
+                    :src="`${game.preview_image}`"
+                    :alt="game.name"
                   />
                 </figure>
                 <div class="card-body">
-                  <h2 class="card-title">Game</h2>
+                  <h2 class="card-title">{{ game.name }}</h2>
                   <div class="justify-end card-actions">
-                    <button class="btn btn-primary">Jouer</button>
+                    <!-- <button class="btn btn-primary">Jouer</button> -->
+                     <RouterLink :to="{ name: 'game_slot', params: { id: game.id } }" class="btn btn-primary">Jouer</RouterLink>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div class="carousel-item">
-              <div class="w-64 shadow-sm card bg-base-100">
-                <figure>
-                  <img
-                    src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
-                    alt="Shoes"
-                  />
-                </figure>
-                <div class="card-body">
-                  <h2 class="card-title">Game</h2>
-                  <div class="justify-end card-actions">
-                    <button class="btn btn-primary">Jouer</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="carousel-item">
-              <div class="w-64 shadow-sm card bg-base-100">
-                <figure>
-                  <img
-                    src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
-                    alt="Shoes"
-                  />
-                </figure>
-                <div class="card-body">
-                  <h2 class="card-title">Game</h2>
-                  <div class="justify-end card-actions">
-                    <button class="btn btn-primary">Jouer</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="carousel-item">
-              <div class="w-64 shadow-sm card bg-base-100">
-                <figure>
-                  <img
-                    src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
-                    alt="Shoes"
-                  />
-                </figure>
-                <div class="card-body">
-                  <h2 class="card-title">Game</h2>
-                  <div class="justify-end card-actions">
-                    <button class="btn btn-primary">Jouer</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="carousel-item">
-              <div class="w-64 shadow-sm card bg-base-100">
-                <figure>
-                  <img
-                    src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
-                    alt="Shoes"
-                  />
-                </figure>
-                <div class="card-body">
-                  <h2 class="card-title">Game</h2>
-                  <div class="justify-end card-actions">
-                    <button class="btn btn-primary">Jouer</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            
-            <div class="carousel-item">
-              <div class="w-64 shadow-sm card bg-base-100">
-                <figure>
-                  <img
-                    src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
-                    alt="Shoes"
-                  />
-                </figure>
-                <div class="card-body">
-                  <h2 class="card-title">Game</h2>
-                  <div class="justify-end card-actions">
-                    <button class="btn btn-primary">Jouer</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="carousel-item">
-              <div class="w-64 shadow-sm card bg-base-100">
-                <figure>
-                  <img
-                    src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
-                    alt="Shoes"
-                  />
-                </figure>
-                <div class="card-body">
-                  <h2 class="card-title">Game</h2>
-                  <div class="justify-end card-actions">
-                    <button class="btn btn-primary">Jouer</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
           </div>
-          <!-- <div class="w-64 shadow-sm card bg-base-100">
-            <figure>
-              <img
-                src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
-                alt="Shoes"
-              />
-            </figure>
-            <div class="card-body">
-              <h2 class="card-title">Game</h2>
-              <div class="justify-end card-actions">
-                <button class="btn btn-primary">Jouer</button>
-              </div>
-            </div>
-          </div> -->
         </div>
       </div>
       <!-- <div class="flex flex-col items-center"> -->
