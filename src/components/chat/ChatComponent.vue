@@ -6,14 +6,28 @@ import { useUsersStore } from '@/stores/users'
 
 const usersStore = useUsersStore()
 
-const messages = ref<[]>([])
+interface IMessage {
+  user: string
+  message: string
+  created_at: string
+}
+
+
+const messages = ref<IMessage[]>([])
 const messageInput = ref('')
 const ws = ref<WebSocket | null>(null)
 const chatContainer = ref<HTMLElement | null>(null)
 
+
 onMounted(() => {
   const token = localStorage.getItem('token')
-  ws.value = new WebSocket(`ws://127.0.0.1:8000/ws/chat/lobby/?token=${token}`)
+  if (token) {
+    ws.value = new WebSocket(`ws://127.0.0.1:8000/ws/chat/lobby/?token=${token}`)
+
+  } else {
+    ws.value = new WebSocket(`ws://127.0.0.1:8000/ws/chat/lobby/`)
+
+  }
 
   ws.value.onopen = () => {
     console.log('WebSocket connected!')
@@ -74,7 +88,7 @@ const sendMessage = () => {
         </div>
         <div class="chat-header">
           {{ msg.user }}
-          <time class="text-xs opacity-50">12:45</time>
+          <time class="text-xs opacity-50">{{ msg.created_at }}</time>
         </div>
         <div class="chat-bubble">{{ msg.message }}</div>
         <div class="opacity-50 chat-footer">Delivered</div>
