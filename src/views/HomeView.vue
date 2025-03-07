@@ -25,9 +25,9 @@ fetchGames().then((games) => {
       <div class="relative flex gap-4 overflow-x-hidden max-w-[calc(100vw-600px)]">
         <div class="gap-4 carousel rounded-box">
           <div v-for="game in gamesStore.games" :key="game.id" class="carousel-item">
-            <div class="w-64 shadow-sm card bg-base-100">
+            <div class="w-64 h-80 shadow-sm card bg-base-100">
               <figure>
-                <img :src="`${game.preview_image}`" :alt="game.name" />
+                <img :src="`${game.preview_image}`" :alt="game.name" class="bg-cover" />
               </figure>
               <div class="card-body">
                 <h2 class="card-title">{{ game.name }}</h2>

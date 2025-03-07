@@ -1,16 +1,15 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 
+// Interfaces
+import type { IMessage } from '@/interfaces/chat/IMessage'
+
 // Stores
 import { useUsersStore } from '@/stores/users'
 
 const usersStore = useUsersStore()
 
-interface IMessage {
-  user: string
-  message: string
-  created_at: string
-}
+
 
 
 const messages = ref<IMessage[]>([])

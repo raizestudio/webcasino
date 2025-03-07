@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+
 // Stores
 import { useUsersStore } from '@/stores/users'
 import { useCoreStore } from '@/stores/core'
@@ -13,8 +14,8 @@ import type { IUser } from '@/interfaces/users/IUser'
 const userStore = useUsersStore()
 const coreStore = useCoreStore()
 
-let email = ref('')
-let password = ref('')
+const email = ref('')
+const password = ref('')
 
 const handleLogin = async (e: Event) => {
   e.preventDefault()
@@ -27,6 +28,12 @@ const handleLogin = async (e: Event) => {
     userStore.login(user)
   }
   coreStore.setLoading(false)
+  if (userStore.isAuth) {
+    const loginModal = document.getElementById('login_modal')
+    if (loginModal) {
+      loginModal.close();
+    }
+  }
 }
 </script>
 

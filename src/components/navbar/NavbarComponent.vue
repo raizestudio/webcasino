@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 
 // Api
-import { fetchCurrencies } from '@/api/financial'
+import { fetchCurrencies, fetchWallets } from '@/api/financial'
 import { logoutUser } from '@/api/auth'
 
 // Components
@@ -12,21 +12,22 @@ import LoginComponent from '@/components/login/LoginComponent.vue'
 // Icons
 import ProfileIcon from '@/components/icons/ProfileIcon.vue'
 
-// Interfaces
-import type { ICurrency } from '@/interfaces/financial/ICurrency'
-
 // Stores
 import { useUsersStore } from '@/stores/users'
+import { useFinancialStore } from '@/stores/financial'
 
 const router = useRouter()
-const userStore = useUsersStore()
+const usersStore = useUsersStore()
+const financialStore = useFinancialStore()
 
-
-const currencies = ref<ICurrency[]>([])
+const token = localStorage.getItem('token')
 
 fetchCurrencies().then((fetchedCurrencies) => {
-  console.log(currencies)
-  currencies.value = fetchedCurrencies
+  financialStore.setCurrencies(fetchedCurrencies)
+})
+
+fetchWallets(token).then((fetchedWallets) => {
+  usersStore.setWallets(fetchedWallets)
 })
 
 const appName = import.meta.env.VITE_APP_NAME
@@ -34,11 +35,26 @@ const appName = import.meta.env.VITE_APP_NAME
 const handleLogout = () => {
   const token = localStorage.getItem('token')
   logoutUser(token).then(() => {
-    userStore.logout()
+    usersStore.logout()
     localStorage.removeItem('token')
     router.push('/')
   })
 }
+
+const getWalletBalanceFromCurrencyName = (currencyId: string) => {
+  const wallet = usersStore.wallets.find((wallet) => wallet.currency === currencyId)
+  return wallet ? wallet.balance : 0
+}
+
+const getMostValuableCurrency = computed(() => {
+  const mostValuableCurrency = usersStore.wallets.reduce((acc, wallet) => {
+    if (wallet.balance > acc.balance) {
+      return wallet
+    }
+    return acc
+  }, { balance: 0 })
+  return mostValuableCurrency
+})
 </script>
 
 <template>
@@ -50,20 +66,22 @@ const handleLogout = () => {
       >
     </div>
     <div class="navbar-end">
-      <!-- {{ currencies }} -->
       <router-link to="/games" class="btn btn-ghost">Games</router-link>
-      <button v-if="!userStore.isAuth" class="btn btn-ghost" onclick="login_modal.showModal()">
+      <button v-if="!usersStore.isAuth" class="btn btn-ghost" onclick="login_modal.showModal()">
         <ProfileIcon />
         <!-- <span>Connecter</span> -->
       </button>
       <div v-else class="flex items-center gap-6">
         <div class="dropdown dropdown-end">
-          <div tabindex="0" role="button" class="flex items-center cursor-pointer">0.00</div>
+          <div tabindex="0" role="button" class="flex items-center cursor-pointer">{{ getMostValuableCurrency.currency }} {{ getMostValuableCurrency.balance }}</div>
           <div
             tabindex="0"
             class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
           >
-            <p v-for="currency in currencies" :key="currency.code">{{ currency.name }}</p>
+            <div v-for="currency in financialStore.currencies" :key="currency.code" class="flex justify-between items-center">
+              <span>{{ currency.name }}</span>
+              <span class="badge">{{ getWalletBalanceFromCurrencyName(currency.code) }}{{ currency.symbol }}</span>
+            </div>
           </div>
         </div>
         <div class="dropdown dropdown-end">
@@ -77,7 +95,7 @@ const handleLogout = () => {
               </div>
             </div>
             <div class="px-6 h-8 flex items-center rounded">
-              <span class="select-none">{{ userStore.user.username }}</span>
+              <span class="select-none">{{ usersStore.user.username }}</span>
             </div>
           </div>
           <ul
