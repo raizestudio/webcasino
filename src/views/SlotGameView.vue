@@ -5,6 +5,9 @@ import { useRoute, useRouter } from 'vue-router'
 // Api
 import { fetchGame } from '@/api/games'
 
+// Components
+import SlotMachine from '@/components/games/SlotMachine.vue'
+
 // Interfaces 
 import type { IGame } from '@/interfaces/games/IGame'
 
@@ -40,7 +43,8 @@ if (!gamesStore.categories.length) {
 
 </script>
 <template>
-  <div class="p-6">
+  <div class="grow p-6">
     <h1 class="text-4xl font-black">{{ playingGame?.name }}</h1>
+    <SlotMachine />
   </div>
 </template>

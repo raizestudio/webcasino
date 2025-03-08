@@ -2,7 +2,7 @@
 import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 
 // Interfaces
-import type { IMessage } from '@/interfaces/chat/IMessage'
+import type { IMessage } from '@/interfaces/chat/IChat'
 
 // Stores
 import { useUsersStore } from '@/stores/users'
@@ -67,6 +67,10 @@ const sendMessage = () => {
     })
   }
 }
+
+const apiProtocol = import.meta.env.VITE_API_PROTOCOL
+const apiHost = import.meta.env.VITE_API_HOST
+const apiPort = import.meta.env.VITE_API_PORT
 </script>
 
 <template>
@@ -81,7 +85,7 @@ const sendMessage = () => {
           <div class="w-10 rounded-full">
             <img
               alt="Tailwind CSS chat bubble component"
-              src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+              :src="`${apiProtocol}://${apiHost}:${apiPort}/media/${msg.avatar}`"
             />
           </div>
         </div>
