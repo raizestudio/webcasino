@@ -1,11 +1,16 @@
 <script setup lang="ts">
+import { useRoute } from 'vue-router'
+
 // Api
 import { fetchGames, fetchCategories } from '@/api/games'
 
 // Stores
 import { useGamesStore } from '@/stores/games'
 
+const route = useRoute()
 const gamesStore = useGamesStore()
+
+const showSignIn = route.query.show_sign_in
 
 fetchCategories().then((categories) => {
   console.log(categories)
@@ -17,13 +22,19 @@ fetchGames().then((games) => {
   gamesStore.setGames(games)
 })
 
-const env = import.meta.env.DEV
+if (showSignIn === 'true') {
+  console.log('isSignIn')
+  const loginModal = document.getElementById('login_modal')
+  if (loginModal) {
+    ;(loginModal as HTMLDialogElement).showModal()
+  }
+}
 </script>
 
 <template>
   <div class="flex flex-col px-10 py-4 grow">
     <div class="flex flex-col gap-4">
-      <h1 class="text-4xl font-bold">Games {{ env }}</h1>
+      <h1 class="text-4xl font-bold">Games</h1>
       <div class="relative flex gap-4 overflow-x-hidden max-w-[calc(100vw-600px)]">
         <div class="gap-4 carousel rounded-box">
           <div v-for="game in gamesStore.games" :key="game.id" class="carousel-item">
