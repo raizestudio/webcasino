@@ -1,11 +1,11 @@
 import { useFetch } from '@vueuse/core'
 
-const ipInfoToken = import.meta.env.VITE_IP_INFO_TOKEN
+// const ipInfoToken = import.meta.env.VITE_IP_INFO_TOKEN
 
 // export const getIPInfo = async (clientIP?: string) => {
 export const getIPInfo = async () => {
   const { data, error } = await useFetch(
-    `https://api.ip2location.io/?key=${ipInfoToken}`, //&ip=${clientIP}
+    `https://freeipapi.com/api/json/`, //&ip=${clientIP}
   )
     .get()
     .json()

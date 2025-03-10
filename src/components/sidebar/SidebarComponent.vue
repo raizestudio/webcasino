@@ -8,12 +8,14 @@ import IconBug from '@/components/icons/IconBug.vue'
 
 // Stores
 import { useCoreStore } from '@/stores/core'
+import { useAuthStore } from '@/stores/auth'
 
 // Components
 import SupportComponent from '@/components/support/SupportComponent.vue'
 import TicketBugComponent from '@/components/support/TicketBugComponent.vue'
 
 const coreStore = useCoreStore()
+const authStore = useAuthStore()
 
 coreStore.fetchApiInfo()
 coreStore.setMenus()
@@ -44,17 +46,22 @@ coreStore.setMenus()
       <div class="flex">
         <div class="flex flex-col justify-end grow">
           <span class="text-xs">API version: {{ coreStore.apiInfo?.api_version || '-' }}</span
-          ><span class="text-xs">ID: xxxxx-xxxxx-xxxxx</span>
+          ><span class="text-xs">{{ authStore.session?.id }}</span>
         </div>
-        <button
-          class="btn fill-base-content hover:fill-error"
-          onclick="ticket_bug_modal.showModal()"
-        >
-          <IconBug width="20" class="transition-all duration-1000 ease-in-out" />
-        </button>
-        <button class="btn fill-base-content hover:fill-info" onclick="support_modal.showModal()">
-          <IconSupport width="20" class="transition-all duration-1000 ease-in-out" />
-        </button>
+        <div class="flex gap-2">
+          <button
+            class="btn btn-sm fill-base-content hover:fill-error"
+            onclick="ticket_bug_modal.showModal()"
+          >
+            <IconBug width="20" class="transition-all duration-1000 ease-in-out" />
+          </button>
+          <button
+            class="btn btn-sm fill-base-content hover:fill-info"
+            onclick="support_modal.showModal()"
+          >
+            <IconSupport width="20" class="transition-all duration-1000 ease-in-out" />
+          </button>
+        </div>
       </div>
     </div>
     <TicketBugComponent />
