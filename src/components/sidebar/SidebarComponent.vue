@@ -1,6 +1,7 @@
 <script setup lang="ts">
-// Api
-// import { fetchMenus } from '@/api/core'
+// Components
+import SupportComponent from '@/components/support/SupportComponent.vue'
+import TicketBugComponent from '@/components/support/TicketBugComponent.vue'
 
 // Icons
 import IconSupport from '@/components/icons/IconSupport.vue'
@@ -9,10 +10,6 @@ import IconBug from '@/components/icons/IconBug.vue'
 // Stores
 import { useCoreStore } from '@/stores/core'
 import { useAuthStore } from '@/stores/auth'
-
-// Components
-import SupportComponent from '@/components/support/SupportComponent.vue'
-import TicketBugComponent from '@/components/support/TicketBugComponent.vue'
 
 const coreStore = useCoreStore()
 const authStore = useAuthStore()

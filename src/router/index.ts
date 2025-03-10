@@ -18,7 +18,7 @@ import { useAuthStore } from '@/stores/auth'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    { path: '/', name: 'home', component: HomeView },
+    { path: '/', name: 'home', component: HomeView, meta: { pageName: "Home" } },
     {
       path: '/users/profile',
       name: 'profile',
@@ -42,10 +42,10 @@ router.beforeEach(async (to, from, next) => {
   const usersStore = useUsersStore()
   const authStore = useAuthStore()
 
-  authStore.setIPInfo()
-
   // Start global loading
   coreStore.setGlobalLoading(true)
+
+  authStore.setIPInfo()
 
   // If already authenticated, proceed
   if (usersStore.isAuth) {

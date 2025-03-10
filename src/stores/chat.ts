@@ -4,7 +4,7 @@ import { defineStore } from 'pinia'
 import type { IMessage } from '@/interfaces/chat/IChat'
 
 export const useChatStore = defineStore('chat', () => {
-  const isChatOpen = ref(true)
+  const isChatOpen = ref(false)
   const messages = ref<IMessage[]>([])
 
   function toggleChat(open: boolean) {

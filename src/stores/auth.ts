@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 
 // Api
 import { getIPInfo } from '@/api/ipinfo'
-import { createSession, createSessionIpInfo } from '@/api/auth'
+import { createSessionIpInfo } from '@/api/auth'
 
 // Interfaces
 import type { ISession } from '@/interfaces/auth/ISession'
@@ -13,7 +13,6 @@ export const useAuthStore = defineStore('auth', () => {
   
   function setIPInfo() {
     getIPInfo().then((data) => {
-      // session.value = data
       createSessionIpInfo(data.ipAddress).then((data) => {
         session.value = data
       })
