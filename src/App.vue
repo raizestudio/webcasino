@@ -4,28 +4,8 @@
 // Components
 import BaseLayout from '@/layouts/BaseLayout.vue'
 
-// Api
-import { authenticateUserFromToken } from "@/api/auth";
-
 // Stores
-import { useUsersStore } from '@/stores/users'
-
-const usersStore = useUsersStore()
-
-const token = localStorage.getItem('token')
-if (!usersStore.isAuth && token) {
-  authenticateUserFromToken(token)
-    .then((user) => {
-      if (!user) {
-        return
-      }
-      usersStore.login(user)
-    })
-    .catch(() => {
-      console.log('Went in catch and remove token')
-      localStorage.removeItem('token')
-    })
-}
+// import { useUsersStore } from '@/stores/users'
 </script>
 
 <template>

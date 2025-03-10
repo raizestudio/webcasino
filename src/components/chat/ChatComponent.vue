@@ -9,23 +9,17 @@ import { useUsersStore } from '@/stores/users'
 
 const usersStore = useUsersStore()
 
-
-
-
 const messages = ref<IMessage[]>([])
 const messageInput = ref('')
 const ws = ref<WebSocket | null>(null)
 const chatContainer = ref<HTMLElement | null>(null)
 
-
 onMounted(() => {
   const token = localStorage.getItem('token')
   if (token) {
     ws.value = new WebSocket(`ws://127.0.0.1:8000/ws/chat/lobby/?token=${token}`)
-
   } else {
     ws.value = new WebSocket(`ws://127.0.0.1:8000/ws/chat/lobby/`)
-
   }
 
   ws.value.onopen = () => {
@@ -74,7 +68,9 @@ const apiPort = import.meta.env.VITE_API_PORT
 </script>
 
 <template>
-  <div class="flex flex-col gap-4 px-2 py-4 shadow-[-4px_0px_6px_-2px_rgba(0,0,0,0.1)] basis-1/4">
+  <div
+    class="flex flex-col gap-4 px-2 py-4 shadow-[-4px_0px_6px_-2px_rgba(0,0,0,0.1)] w-112 overflow-hidden h-full bg-base-200"
+  >
     <span>Chat</span>
     <div
       ref="chatContainer"
@@ -103,7 +99,9 @@ const apiPort = import.meta.env.VITE_API_PORT
         @keyup.enter="sendMessage"
         type="text"
         class="w-full input"
-        :placeholder="usersStore.isAuth ? 'Type your message...' : 'You need to login to send message'"
+        :placeholder="
+          usersStore.isAuth ? 'Type your message...' : 'You need to login to send message'
+        "
         :disabled="!usersStore.isAuth"
       />
       <button @click="sendMessage" class="btn" :disabled="!usersStore.isAuth">Send</button>

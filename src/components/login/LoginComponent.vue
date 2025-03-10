@@ -4,6 +4,7 @@ import { ref } from 'vue'
 // Stores
 import { useUsersStore } from '@/stores/users'
 import { useCoreStore } from '@/stores/core'
+import { useToastStore } from '@/stores/toast'
 
 // Api
 import { authenticateUser } from '@/api/auth'
@@ -13,6 +14,7 @@ import type { IUser } from '@/interfaces/users/IUser'
 
 const userStore = useUsersStore()
 const coreStore = useCoreStore()
+const toastStore = useToastStore()
 
 const email = ref('')
 const password = ref('')
@@ -31,38 +33,57 @@ const handleLogin = async (e: Event) => {
   if (userStore.isAuth) {
     const loginModal = document.getElementById('login_modal')
     if (loginModal) {
-      loginModal.close();
+      ;(loginModal as HTMLDialogElement).close()
     }
+    toastStore.addToast({
+      id: 'login',
+      message: 'You have successfully logged in',
+    })
   }
 }
 </script>
 
 <template>
-  <h3 class="text-lg font-bold">Authentication</h3>
-  <p class="py-4">Please enter id</p>
-  <form class="flex flex-col gap-4">
-    <div class="flex flex-col items-center gap-2 px-6">
-      <div class="flex flex-col w-full">
-        <label for="email">Email</label>
-        <input
-          v-model="email"
-          type="text"
-          class="input input-bordered w-full"
-          placeholder="Email"
-        />
-      </div>
-      <div class="flex flex-col w-full">
-        <label for="password">Password</label>
-        <input
-          v-model="password"
-          type="password"
-          class="input input-bordered w-full"
-          placeholder="Password"
-        />
-      </div>
+  <dialog id="login_modal" class="modal">
+    <div class="modal-box">
+      <form method="dialog">
+        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+      </form>
+      <h3 class="text-lg font-bold">Authentication</h3>
+      <p class="py-4">Please enter id</p>
+      <form class="flex flex-col gap-4">
+        <div class="flex flex-col items-center gap-2 px-6">
+          <div class="flex flex-col w-full">
+            <label for="email">Email</label>
+            <input
+              v-model="email"
+              type="text"
+              class="input input-bordered w-full"
+              placeholder="Email"
+            />
+          </div>
+          <div class="flex flex-col w-full">
+            <label for="password">Password</label>
+            <input
+              v-model="password"
+              type="password"
+              class="input input-bordered w-full"
+              placeholder="Password"
+            />
+          </div>
+        </div>
+        <button class="btn" @click="(e) => handleLogin(e)" v-bind:disabled="coreStore.isLoading">
+          <span v-if="!coreStore.isLoading">Login</span
+          ><span v-else class="loading loading-spinner loading-sm"></span>
+        </button>
+      </form>
+      <!-- <div class="modal-action"> -->
+
+      <!-- </div> -->
     </div>
-    <button class="btn" @click="(e) => handleLogin(e)" v-bind:disabled="coreStore.isLoading">
-      <span v-if="!coreStore.isLoading">Login</span><span v-else class="loading loading-spinner loading-sm"></span>
-    </button>
-  </form>
+    <form method="dialog" class="modal-backdrop">
+      <!-- if there is a button in form, it will close the modal -->
+      <button>close</button>
+    </form>
+  </dialog>
 </template>

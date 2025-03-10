@@ -37,7 +37,7 @@ const getMostValuableCurrency = computed(() => {
     { balance: 0 },
   )
 
-  let currency = financialStore.currencies.find(
+  const currency = financialStore.currencies.find(
     (currency) => currency.code === mostValuableCurrency.currency,
   )
   return {
@@ -52,9 +52,11 @@ const getMostValuableCurrency = computed(() => {
     <div
       tabindex="0"
       role="button"
-      class="relative flex items-center cursor-pointer bg-base-200 hover:opacity-80 pl-12 pr-6 py-2 rounded-full select-none gap-2"
+      class="relative flex items-center cursor-pointer bg-base-200 hover:opacity-80 pl-12 pr-6 py-2.5 rounded-full select-none gap-2"
     >
-      <div class="bg-primary rounded-full p-1.5 absolute left-0.5 shadow-lg">
+      <div
+        class="absolute flex justify-center items-center bg-primary rounded-full w-9 h-9 left-1 shadow-lg"
+      >
         <span>{{ getMostValuableCurrency.currency?.code }}</span>
       </div>
       <div class="flex gap-0.5">

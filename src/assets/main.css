@@ -1,10 +1,13 @@
 @import './base.css';
-@import "tailwindcss";
+@import 'tailwindcss';
 @plugin "daisyui";
 
 @theme {
   --font-roboto: 'Roboto';
   --font-kneewave: 'Kneewave';
+
+  --w-112: 28rem;
+  --w-128: 32rem;
 }
 
 #app {
