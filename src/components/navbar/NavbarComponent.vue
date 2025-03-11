@@ -1,8 +1,9 @@
 <script setup lang="ts">
 // Components
-import ProfileComponent from '@/components/navbar/ProfileComponent.vue'
+import ProfileComponent from '@/components/navbar/NavbarProfileComponent.vue'
 import LoginComponent from '@/components/login/LoginComponent.vue'
 import WalletNavbarComponent from '@/components/wallet/WalletNavbarComponent.vue'
+import NavbarTitleComponent from '@/components/navbar/NavbarTitleComponent.vue'
 
 // Icons
 import IconList from '@/components/icons/IconList.vue'
@@ -18,7 +19,7 @@ const coreStore = useCoreStore()
 const usersStore = useUsersStore()
 const chatStore = useChatStore()
 
-const appName = import.meta.env.VITE_APP_NAME
+
 </script>
 
 <template>
@@ -31,16 +32,12 @@ const appName = import.meta.env.VITE_APP_NAME
       >
         <IconList width="26" />
       </button>
-      <RouterLink to="/" class=""
-        ><span class="text-3xl font-black font-kneewave select-none">{{
-          appName
-        }}</span></RouterLink
-      >
+      <NavbarTitleComponent />
     </div>
     <div class="navbar-end gap-4">
       <!-- <router-link to="/games" class="btn btn-ghost">Games</router-link> -->
       <button v-if="!usersStore.isAuth" class="btn btn-ghost" onclick="login_modal.showModal()">
-        <IconProfile width="26" />
+        <IconProfile width="24" />
         <!-- <span>Connecter</span> -->
       </button>
       <!-- <div v-if="usersStore.isAuth" class="flex items-center gap-6"> -->
@@ -48,7 +45,7 @@ const appName = import.meta.env.VITE_APP_NAME
       <ProfileComponent v-if="usersStore.isAuth" />
       <!-- </div> -->
       <button class="btn btn-ghost" @click="() => chatStore.toggleChat(!chatStore.isChatOpen)">
-        <IconChat width="26" />
+        <IconChat width="24" />
       </button>
     </div>
     <LoginComponent />
