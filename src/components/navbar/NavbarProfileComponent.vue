@@ -47,7 +47,7 @@ const handleLogout = () => {
           <span class="badge">New</span>
         </router-link>
       </li>
-      <li><a>Settings</a></li>
+      <li><router-link to="/sdsq">Settings</router-link></li>
       <li @click="handleLogout"><a>Logout</a></li>
     </ul>
   </div>

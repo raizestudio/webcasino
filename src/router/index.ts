@@ -1,11 +1,13 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 
-// Components
+// Views
 import HomeView from '@/views/HomeView.vue'
 import GamesView from '@/views/GamesView.vue'
-import SlotGameView from '@/views/SlotGameView.vue'
+// import SlotGameView from '@/views/SlotGameView.vue'
 import ProfileView from '@/views/users/ProfileView.vue'
 import InGameView from '@/views/InGameView.vue'
+import NotFoundView from '@/views/errors/NotFoundView.vue'
+import InternalErrorView from '@/views/errors/InternalErrorView.vue'
 
 // Api
 import { authenticateUserFromToken } from '@/api/auth'
@@ -15,25 +17,29 @@ import { useCoreStore } from '@/stores/core'
 import { useUsersStore } from '@/stores/users'
 import { useAuthStore } from '@/stores/auth'
 
+const routes: Array<RouteRecordRaw> = [
+  { path: '/', name: 'home', component: HomeView, meta: { pageName: 'Home' } },
+  {
+    path: '/users/profile',
+    name: 'profile',
+    component: ProfileView,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/users/:id',
+    name: 'profile_id',
+    component: ProfileView,
+    meta: { requiresAuth: true },
+  },
+  { path: '/games', name: 'games', component: GamesView, meta: { requiresAuth: true } },
+  { path: '/games/:category/:id', name: 'game_slot', component: InGameView },
+  { path: '/500', name: 'InternalError', component: InternalErrorView },
+  { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFoundView },
+]
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    { path: '/', name: 'home', component: HomeView, meta: { pageName: 'Home' } },
-    {
-      path: '/users/profile',
-      name: 'profile',
-      component: ProfileView,
-      meta: { requiresAuth: true },
-    },
-    {
-      path: '/users/:id',
-      name: 'profile_id',
-      component: ProfileView,
-      meta: { requiresAuth: true },
-    },
-    { path: '/games', name: 'games', component: GamesView, meta: { requiresAuth: true } },
-    { path: '/games/:category/:id', name: 'game_slot', component: InGameView },
-  ],
+  routes,
 })
 
 router.beforeEach(async (to, from, next) => {
@@ -59,6 +65,7 @@ router.beforeEach(async (to, from, next) => {
     try {
       const user = await authenticateUserFromToken(token)
       if (user) {
+        usersStore.getPlayerProfile(user.id)
         usersStore.login(user)
       } else {
         localStorage.removeItem('token')

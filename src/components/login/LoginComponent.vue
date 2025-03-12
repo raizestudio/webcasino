@@ -1,16 +1,23 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { Field, Form } from 'vee-validate'
+
+// Api
+import { authenticateUser } from '@/api/auth'
+
+// Icons
+import IconGoogle from '@/components/icons/IconGoogle.vue'
+import IconFacebook from '@/components/icons/IconFacebook.vue'
+import IconX from '@/components/icons/IconX.vue'
+import IconReddit from '@/components/icons/IconReddit.vue'
+
+// Interfaces
+import type { IUser } from '@/interfaces/users/IUser'
 
 // Stores
 import { useUsersStore } from '@/stores/users'
 import { useCoreStore } from '@/stores/core'
 import { useToastStore } from '@/stores/toast'
-
-// Api
-import { authenticateUser } from '@/api/auth'
-
-// Interfaces
-import type { IUser } from '@/interfaces/users/IUser'
 
 const userStore = useUsersStore()
 const coreStore = useCoreStore()
@@ -19,8 +26,8 @@ const toastStore = useToastStore()
 const email = ref('')
 const password = ref('')
 
-const handleLogin = async (e: Event) => {
-  e.preventDefault()
+const handleLogin = async () => {
+  // e.preventDefault()
   coreStore.setLoading(true)
   let user: IUser | null = null
   user = await authenticateUser(email.value, password.value)
@@ -28,6 +35,7 @@ const handleLogin = async (e: Event) => {
   console.log(user)
   if (user) {
     userStore.login(user)
+    userStore.getPlayerProfile()
   }
   coreStore.setLoading(false)
   if (userStore.isAuth) {
@@ -41,6 +49,32 @@ const handleLogin = async (e: Event) => {
     })
   }
 }
+
+const validateEmail = (value: unknown) => {
+  if (typeof value !== 'string') {
+    return 'Invalid email'
+  }
+
+  if (!value) {
+    return 'Email is required'
+  } else if (!value.includes('@')) {
+    return 'Invalid email'
+  }
+
+  return true
+}
+
+const validatePassword = (value: unknown) => {
+  if (typeof value !== 'string') {
+    return 'Invalid password'
+  }
+
+  if (!value) {
+    return 'Password is required'
+  }
+
+  return true
+}
 </script>
 
 <template>
@@ -49,40 +83,67 @@ const handleLogin = async (e: Event) => {
       <form method="dialog">
         <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
       </form>
-      <h3 class="text-lg font-bold">Authentication</h3>
-      <p class="py-4">Please enter id</p>
-      <form class="flex flex-col gap-4">
-        <div class="flex flex-col items-center gap-2 px-6">
-          <div class="flex flex-col w-full">
-            <label for="email">Email</label>
-            <input
-              v-model="email"
-              type="text"
-              class="input input-bordered w-full"
-              placeholder="Email"
-            />
+      <div class="flex flex-col gap-4">
+        <h3 class="text-xl font-black">Authentication</h3>
+        <Form class="flex flex-col gap-8 pt-8" @submit="handleLogin">
+          <div class="flex flex-col items-center gap-2 px-6">
+            <div class="flex flex-col w-full gap-2">
+              <label for="email">Email</label>
+              <Field name="email" v-slot="{ field, errorMessage }" :rules="validateEmail">
+                <input
+                  v-model="email"
+                  v-bind="field"
+                  :class="`input input-bordered w-full ${errorMessage ? 'input-error' : ''}`"
+                  type="text"
+                />
+                <span>{{ errorMessage }}</span>
+              </Field>
+            </div>
+            <div class="flex flex-col w-full">
+              <label for="password">Password</label>
+              <Field name="password" v-slot="{ field, errorMessage }" :rules="validatePassword">
+                <input
+                  v-model="password"
+                  v-bind="field"
+                  :class="`input input-bordered w-full ${errorMessage && 'input-error'}`"
+                  type="password"
+                />
+                <span class="text-sm">Hint: Enter a secure password you can remember</span>
+                <span>{{ errorMessage }}</span>
+              </Field>
+            </div>
           </div>
-          <div class="flex flex-col w-full">
-            <label for="password">Password</label>
-            <input
-              v-model="password"
-              type="password"
-              class="input input-bordered w-full"
-              placeholder="Password"
-            />
+          <button
+            class="btn"
+            v-bind:disabled="coreStore.isLoading || !email || !password"
+            type="submit"
+          >
+            <span v-if="!coreStore.isLoading">Login</span
+            ><span v-else class="loading loading-spinner loading-sm"></span>
+          </button>
+        </Form>
+        <div class="divider"></div>
+        <div class="flex justify-evenly">
+          <div class="btn hover:btn-primary h-auto px-4 py-2">
+            <IconGoogle class="w-10 h-10 fill-base-content" />
+          </div>
+          <div class="btn hover:btn-primary h-auto px-4 py-2">
+            <IconFacebook class="w-10 h-10 fill-base-content" />
+          </div>
+          <div class="btn hover:btn-primary h-auto px-4 py-2">
+            <IconX class="w-10 h-10 fill-base-content" />
+          </div>
+          <div class="btn hover:btn-primary h-auto px-4 py-2">
+            <IconReddit class="w-10 h-10 fill-base-content" />
           </div>
         </div>
-        <button class="btn" @click="(e) => handleLogin(e)" v-bind:disabled="coreStore.isLoading">
-          <span v-if="!coreStore.isLoading">Login</span
-          ><span v-else class="loading loading-spinner loading-sm"></span>
-        </button>
-      </form>
-      <!-- <div class="modal-action"> -->
-
-      <!-- </div> -->
+        <div class="flex flex-col gap-2">
+          <p class="text-center text-sm">Don't have an account? <a href="#">Sign up</a></p>
+          <p class="text-center text-sm">Forgot your password? <a href="#">Reset password</a></p>
+        </div>
+      </div>
     </div>
     <form method="dialog" class="modal-backdrop">
-      <!-- if there is a button in form, it will close the modal -->
       <button>close</button>
     </form>
   </dialog>

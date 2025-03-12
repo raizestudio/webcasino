@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
-import { Application, Graphics, Text, TextStyle } from 'pixi.js'
+import { Application, Graphics, Text, TextStyle, Ticker } from 'pixi.js'
 
 let app: Application
 const containerRef = ref<HTMLElement | null>(null)
 let coin: Graphics
 let flipping = false
 let resultText: Text
+let isHeads = true // Track the current face of the coin
 
 function createCoin(color: string) {
   const circle = new Graphics()
@@ -61,31 +62,40 @@ function flipCoin() {
   if (flipping) return
   flipping = true
 
-  let rotationCount = 10 // Number of flips
-  const spinSpeed = 0.3
   const outcome = Math.random() < 0.5 ? 'blue' : 'red'
+  const totalFrames = 60
+  let frame = 0
 
-  const spin = setInterval(() => {
-    coin.rotation += spinSpeed
-    rotationCount--
-    if (rotationCount <= 0) {
-      clearInterval(spin)
-      coin.rotation = 0
+  const ticker = new Ticker()
+  ticker.add(() => {
+    frame++
 
-      // Change coin color
+    // Scale effect: Shrink the coin horizontally
+    const progress = frame / totalFrames
+    coin.scale.x = Math.cos(progress * Math.PI) // Shrinks to 0, then expands
+
+    // Swap color when at the thinnest point
+    if (frame === Math.floor(totalFrames / 2)) {
+      isHeads = !isHeads
       app.stage.removeChild(coin)
-      coin = createCoin(outcome)
+      coin = createCoin(isHeads ? 'blue' : 'red')
       coin.x = app.screen.width / 2
       coin.y = app.screen.height / 2
+      coin.scale.x = 0 // Start from thin state
       coin.eventMode = 'static'
       coin.cursor = 'pointer'
       coin.addListener('pointerdown', flipCoin)
       app.stage.addChild(coin)
-
-      flipping = false
-      resultText.text = outcome === 'blue' ? 'Heads! You win!' : 'Tails! You lose!'
     }
-  }, 100)
+
+    if (frame >= totalFrames) {
+      ticker.stop()
+      flipping = false
+      resultText.text = isHeads ? 'Heads! You win!' : 'Tails! You lose!'
+    }
+  })
+
+  ticker.start()
 }
 
 onMounted(() => {

@@ -1,7 +1,7 @@
 import type { IUser } from '@/interfaces/users/IUser'
 
 export interface ISession {
-  id: number
+  id: number // Pk
   ip: string
   user_agent: string
   latitude: number
@@ -14,6 +14,7 @@ export interface ISession {
   created_at: string
   updated_at: string
 
+  // Relations
   country: string // TODO: Create ICountry interface
   administrative_level_primary: string // TODO: Create IAdministrativeLevel interface
   administrative_level_secondary: string // TODO: Create IAdministrativeLevel interface
