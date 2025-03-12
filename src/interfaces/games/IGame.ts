@@ -1,7 +1,4 @@
-export interface IGameCategory {
-  id: number
-  name: string
-}
+import type { IGameCategory } from '@/interfaces/games/IGameCategory'
 
 export interface IGame {
   id: number

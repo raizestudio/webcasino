@@ -4,8 +4,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
 import GamesView from '@/views/GamesView.vue'
 import SlotGameView from '@/views/SlotGameView.vue'
-import TableGameView from '@/views/TableGameView.vue'
 import ProfileView from '@/views/users/ProfileView.vue'
+import InGameView from '@/views/InGameView.vue'
 
 // Api
 import { authenticateUserFromToken } from '@/api/auth'
@@ -18,7 +18,7 @@ import { useAuthStore } from '@/stores/auth'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    { path: '/', name: 'home', component: HomeView, meta: { pageName: "Home" } },
+    { path: '/', name: 'home', component: HomeView, meta: { pageName: 'Home' } },
     {
       path: '/users/profile',
       name: 'profile',
@@ -32,8 +32,7 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     { path: '/games', name: 'games', component: GamesView, meta: { requiresAuth: true } },
-    { path: '/games/slots/:id', name: 'game_slot', component: SlotGameView },
-    { path: '/games/table/:id', name: 'game_table', component: TableGameView },
+    { path: '/games/:category/:id', name: 'game_slot', component: InGameView },
   ],
 })
 

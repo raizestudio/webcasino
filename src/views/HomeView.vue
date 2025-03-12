@@ -47,7 +47,10 @@ if (showSignIn === 'true') {
                 <div class="justify-end card-actions">
                   <!-- <button class="btn btn-primary">Jouer</button> -->
                   <RouterLink
-                    :to="{ name: 'game_slot', params: { id: game.id } }"
+                    :to="{
+                      name: 'game_slot',
+                      params: { id: game.id, category: game.category },
+                    }"
                     class="btn btn-primary"
                     >Jouer</RouterLink
                   >

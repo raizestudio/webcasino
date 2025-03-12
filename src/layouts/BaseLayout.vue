@@ -22,8 +22,7 @@ const chatStore = useChatStore()
     <ToastComponent />
     <NavbarComponent />
     <main class="flex grow h-[calc(100vh-64px)]">
-      <Transition><SidebarComponent v-if="!coreStore.isSidebarOpen" /></Transition>
-
+      <Transition><SidebarComponent v-if="coreStore.isSidebarOpen" /></Transition>
       <RouterView />
       <Transition><ChatComponent v-if="chatStore.isChatOpen" /></Transition>
     </main>
