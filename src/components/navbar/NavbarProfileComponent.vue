@@ -8,6 +8,7 @@ import { logoutUser } from '@/api/auth'
 import { useUsersStore } from '@/stores/users'
 
 const router = useRouter()
+
 const usersStore = useUsersStore()
 
 const handleLogout = () => {
@@ -30,7 +31,7 @@ const handleLogout = () => {
     <div tabindex="0" role="button" class="flex items-center cursor-pointer">
       <div tabindex="0" role="button" class="avatar">
         <div class="w-9 h-9 rounded-full">
-          <img alt="Tailwind CSS Navbar component" :src="`${usersStore.user.avatar}`" />
+          <img :alt="`${usersStore.user.username}'s avatar`" :src="`${usersStore.user.avatar}`" />
         </div>
       </div>
       <div class="px-2 h-8 flex items-center rounded">
