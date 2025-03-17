@@ -68,13 +68,23 @@ coreStore.setMenus()
       </div>
     </div>
     <div class="flex justify-center items-center gap-2">
-      <div @click="() => themeStore.setTheme('auto')" class="btn btn-sm" :class="themeStore.theme === 'auto' ? 'btn btn-sm' : 'btn btn-ghost'">
+      <div
+        @click="() => themeStore.setTheme('auto')"
+        class="btn btn-sm"
+        :class="themeStore.theme === 'auto' ? 'btn btn-sm' : 'btn btn-ghost'"
+      >
         <IconComputerTower class="w-5 h-5 fill-base-content" />
       </div>
-      <div @click="() => themeStore.setTheme('light')" :class="themeStore.theme === 'light' ? 'btn btn-sm' : 'btn btn-ghost btn-sm'">
+      <div
+        @click="() => themeStore.setTheme('light')"
+        :class="themeStore.theme === 'light' ? 'btn btn-sm' : 'btn btn-ghost btn-sm'"
+      >
         <IconSun class="w-5 h-5 fill-base-content" />
       </div>
-      <div @click="() => themeStore.setTheme('dark')" :class="themeStore.theme === 'dark' ? 'btn btn-sm' : 'btn btn-ghost btn-sm'">
+      <div
+        @click="() => themeStore.setTheme('dark')"
+        :class="themeStore.theme === 'dark' ? 'btn btn-sm' : 'btn btn-ghost btn-sm'"
+      >
         <IconMoon class="w-5 h-5 fill-base-content" />
       </div>
     </div>

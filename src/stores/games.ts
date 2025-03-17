@@ -1,7 +1,10 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 
-// Interfaces 
+// Api
+import { fetchCategories, fetchGames } from '@/api/games'
+
+// Interfaces
 import type { IGame, IGameCategory } from '@/interfaces/games/IGame'
 
 export const useGamesStore = defineStore('games', () => {
@@ -12,8 +15,8 @@ export const useGamesStore = defineStore('games', () => {
     categories.value = value
   }
 
-  function setGames(value: IGame[]) {
-    games.value = value
+  async function setGames() {
+    games.value = await fetchGames().then((data) => data?.results || [])
   }
   // function setLoading(value: boolean) {
   //   isLoading.value = value

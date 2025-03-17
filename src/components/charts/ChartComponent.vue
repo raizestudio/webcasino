@@ -1,52 +1,36 @@
 <script setup lang="ts">
-import { use } from 'echarts/core';
-import { CanvasRenderer } from 'echarts/renderers';
-import { PieChart } from 'echarts/charts';
-import {
-  TitleComponent,
-  TooltipComponent,
-  LegendComponent,
-} from 'echarts/components';
-import VChart, { THEME_KEY } from 'vue-echarts';
-import { ref, provide } from 'vue';
+import { use } from 'echarts/core'
+import { CanvasRenderer } from 'echarts/renderers'
+import { PieChart } from 'echarts/charts'
+import { TitleComponent, TooltipComponent, LegendComponent } from 'echarts/components'
+import VChart, { THEME_KEY } from 'vue-echarts'
+import { ref, provide, watch } from 'vue'
 
-use([
-  CanvasRenderer,
-  PieChart,
-  TitleComponent,
-  TooltipComponent,
-  LegendComponent,
-]);
+use([CanvasRenderer, PieChart, TitleComponent, TooltipComponent, LegendComponent])
 
-provide(THEME_KEY, 'dark');
+provide(THEME_KEY, 'light')
+
+const props = defineProps<{
+  title?: Record<string, string>
+  legend?: Record<string, string>
+  seriesName: string
+  data: Record<string, unknown>[]
+}>()
 
 const option = ref({
-  title: {
-    text: 'Traffic Sources',
-    left: 'center',
-  },
+  title: props.title ? props.title : { text: '' },
   tooltip: {
     trigger: 'item',
     formatter: '{a} <br/>{b} : {c} ({d}%)',
   },
-  legend: {
-    orient: 'vertical',
-    left: 'left',
-    data: ['Direct', 'Email', 'Ad Networks', 'Video Ads', 'Search Engines'],
-  },
+  legend: props.legend ? props.legend : { data: [] },
   series: [
     {
-      name: 'Traffic Sources',
+      name: props.seriesName,
       type: 'pie',
-      radius: '55%',
-      center: ['50%', '60%'],
-      data: [
-        { value: 335, name: 'Direct' },
-        { value: 310, name: 'Email' },
-        { value: 234, name: 'Ad Networks' },
-        { value: 135, name: 'Video Ads' },
-        { value: 1548, name: 'Search Engines' },
-      ],
+      radius: '80%',
+      center: ['50%', '50%'],
+      data: props.data,
       emphasis: {
         itemStyle: {
           shadowBlur: 10,
@@ -56,9 +40,14 @@ const option = ref({
       },
     },
   ],
-});
+})
+
+// watch(
+//   () => props.data,
+//   () => {
+//     option.value.series = props.data
+//   },
+// )
 </script>
 
-<template>
-  <v-chart class="chart" :option="option" autoresize />
-</template>
+<template><v-chart class="chart" :option="option" autoresize /></template>

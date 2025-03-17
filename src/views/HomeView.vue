@@ -17,10 +17,7 @@ fetchCategories().then((categories) => {
   gamesStore.setCategories(categories)
 })
 
-fetchGames().then((games) => {
-  console.log(games)
-  gamesStore.setGames(games)
-})
+gamesStore.setGames()
 
 if (showSignIn === 'true') {
   console.log('isSignIn')

@@ -8,6 +8,7 @@ import ProfileView from '@/views/users/ProfileView.vue'
 import InGameView from '@/views/InGameView.vue'
 import NotFoundView from '@/views/errors/NotFoundView.vue'
 import InternalErrorView from '@/views/errors/InternalErrorView.vue'
+import DashboardView from '@/views/dashboard/DashboardView.vue'
 
 // Api
 import { authenticateUserFromToken } from '@/api/auth'
@@ -18,7 +19,10 @@ import { useUsersStore } from '@/stores/users'
 import { useAuthStore } from '@/stores/auth'
 
 const routes: Array<RouteRecordRaw> = [
+  // Home
   { path: '/', name: 'home', component: HomeView, meta: { pageName: 'Home' } },
+
+  // Users
   {
     path: '/users/profile',
     name: 'profile',
@@ -31,8 +35,15 @@ const routes: Array<RouteRecordRaw> = [
     component: ProfileView,
     meta: { requiresAuth: true },
   },
+
+  // Games
   { path: '/games', name: 'games', component: GamesView, meta: { requiresAuth: true } },
   { path: '/games/:category/:id', name: 'game_slot', component: InGameView },
+
+  // Dashboard
+  { path: '/dashboard', name: 'dashboard', component: DashboardView },
+
+  // Errors
   { path: '/500', name: 'InternalError', component: InternalErrorView },
   { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFoundView },
 ]

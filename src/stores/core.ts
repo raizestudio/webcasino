@@ -33,7 +33,7 @@ export const useCoreStore = defineStore('core', () => {
 
   function setMenus() {
     fetchMenus().then((data) => {
-      menus.value = data
+      menus.value = data?.results || []
     })
   }
 

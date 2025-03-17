@@ -12,6 +12,7 @@ import type { IUser } from '@/interfaces/users/IUser'
 import { useUsersStore } from '@/stores/users'
 
 const route = useRoute()
+
 const usersStore = useUsersStore()
 
 const user = ref<IUser | null>(null)
