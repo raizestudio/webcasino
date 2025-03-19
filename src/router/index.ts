@@ -9,6 +9,7 @@ import InGameView from '@/views/InGameView.vue'
 import NotFoundView from '@/views/errors/NotFoundView.vue'
 import InternalErrorView from '@/views/errors/InternalErrorView.vue'
 import DashboardView from '@/views/dashboard/DashboardView.vue'
+import PoolView from '@/views/PoolView.vue'
 
 // Api
 import { authenticateUserFromToken } from '@/api/auth'
@@ -39,6 +40,9 @@ const routes: Array<RouteRecordRaw> = [
   // Games
   { path: '/games', name: 'games', component: GamesView, meta: { requiresAuth: true } },
   { path: '/games/:category/:id', name: 'game_slot', component: InGameView },
+
+  // Crypto Pools
+  { path: '/pools', name: 'pools', component: PoolView },
 
   // Dashboard
   { path: '/dashboard', name: 'dashboard', component: DashboardView },

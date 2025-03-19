@@ -5,6 +5,7 @@ import type { Ref } from 'vue'
 import type { IPaginationResponse } from '@/interfaces/api/IPaginationResponse'
 import type { IExchange } from '@/interfaces/financial/IExchange'
 import type { ICurrency } from '@/interfaces/financial/ICurrency'
+import type { IPool } from '@/interfaces/financial/IPool'
 
 const apiProtocol = import.meta.env.VITE_API_PROTOCOL
 const apiHost = import.meta.env.VITE_API_HOST
@@ -73,5 +74,29 @@ export const fetchExchanges = async (token?: string) => {
   console.log('Got exchanges :', data.value)
   if (data.value) {
     return data.value
+  }
+}
+
+export const fetchPools = async (token?: string) => {
+  const {
+    data,
+    error,
+  }: { data: Ref<IPaginationResponse<IPool> | null>; error: Ref<unknown | null> } = await useFetch<
+    IPaginationResponse<IPool>
+  >(`${baseUrl}/financial/pools/`, {
+    method: 'GET',
+    headers: token ? { Authorization: `Token ${token}` } : {},
+  })
+    .post()
+    .json()
+
+  if (error.value) {
+    console.error('Login failed:', error.value)
+    return
+  }
+
+  console.log('Got pools :', data.value)
+  if (data.value) {
+    return data.value.results
   }
 }
